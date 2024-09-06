@@ -36,3 +36,15 @@ fetch("https://api.coingecko.com/api/v3/coins/ethereum")
 <p>👇: R${data.market_data.low_24h.zar}</p>`;
   })
   .catch((err) => console.error(err)); // Log errors if the fetch fails
+
+  // Update the "time" element every second with the current time 
+
+  function getCurrentTime() {
+    const date = new Date()
+    document.getElementById("time").textContent = date.toLocaleTimeString("en-us", {timeStyle: "small"})
+}
+
+// Call getCurrentTime every second
+
+setInterval(getCurrentTime, 1000)
+
