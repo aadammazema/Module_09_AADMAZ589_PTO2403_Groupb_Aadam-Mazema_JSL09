@@ -37,14 +37,42 @@ fetch("https://api.coingecko.com/api/v3/coins/ethereum")
   })
   .catch((err) => console.error(err)); // Log errors if the fetch fails
 
-  // Update the "time" element every second with the current time 
+// Update the "time" element every second with the current time
 
-  function getCurrentTime() {
-    const date = new Date()
-    document.getElementById("time").textContent = date.toLocaleTimeString("en-us", {timeStyle: "small"})
+function getCurrentTime() {
+  const date = new Date();
+  document.getElementById("time").textContent = date.toLocaleTimeString(
+    "en-us",
+    { timeStyle: "medium" }
+  );
 }
 
 // Call getCurrentTime every second
 
-setInterval(getCurrentTime, 1000)
+setInterval(getCurrentTime, 1000);
 
+// Get the user's current geographical location
+
+navigator.geolocation.getCurrentPosition(position => {
+  // Fetch weather data from OpenWeatherMap API using current location
+  fetch(`https://apis.scrimba.com/openweathermap/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&units=metric`)
+      .then(res => {
+          if (!res.ok) {
+              throw Error("Weather data not available")
+          }
+          return res.json()
+      })
+      // Process and display the weather data
+      .then(data => {
+        console.log(data)
+        const iconUrl = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`
+        // Update the HTML with weather icon, temperature, and city name
+        document.getElementById("weather").innerHTML = `
+            <img src=${iconUrl} />
+            <p class="weather-temp">${Math.round(data.main.temp)}°C</p>
+            <p class="weather-city">${data.name}</p>
+        `
+    })
+    // Handle any errors during the fetch process
+    .catch(err => console.error(err))
+});
